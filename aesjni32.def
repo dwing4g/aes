@@ -1,0 +1,15 @@
+EXPORTS
+	Java_jane_test_AesNative_aes_1create
+	Java_jane_test_AesNative_aes_1destroy
+	Java_jane_test_AesNative_aes_1update
+	aes_decrypt
+	aes_decrypt_key
+	aes_decrypt_key128
+	aes_decrypt_key192
+	aes_decrypt_key256
+	aes_encrypt
+	aes_encrypt_key
+	aes_encrypt_key128
+	aes_encrypt_key192
+	aes_encrypt_key256
+	aes_init

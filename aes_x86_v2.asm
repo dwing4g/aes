@@ -85,7 +85,7 @@
 ; The size of the code can be reduced by using functions for the encryption
 ; and decryption rounds in place of macro expansion
 
-%define REDUCE_CODE_SIZE
+; %define REDUCE_CODE_SIZE
 
 %define AES_128                 ; define if AES with 128 bit keys is needed
 %define AES_192                 ; define if AES with 192 bit keys is needed
