@@ -1,23 +1,25 @@
 EXPORTS
-	Java_jane_test_AesNative_aes_1create
-	Java_jane_test_AesNative_aes_1destroy
-	Java_jane_test_AesNative_aes_1update
-	aes_decrypt
-	aes_decrypt_i
-	aes_decrypt_key
-	aes_decrypt_key128
-	aes_decrypt_key128_i
-	aes_decrypt_key192
-	aes_decrypt_key192_i
-	aes_decrypt_key256
-	aes_decrypt_key256_i
-	aes_encrypt
-	aes_encrypt_i
-	aes_encrypt_key
-	aes_encrypt_key128
-	aes_encrypt_key128_i
-	aes_encrypt_key192
-	aes_encrypt_key192_i
-	aes_encrypt_key256
-	aes_encrypt_key256_i
-	aes_init
+Java_jane_test_AesNative_aes_1create
+Java_jane_test_AesNative_aes_1decrypt
+Java_jane_test_AesNative_aes_1destroy
+Java_jane_test_AesNative_aes_1encrypt
+Java_jane_test_AesNative_aes_1update
+aes_decrypt
+aes_decrypt_i
+aes_decrypt_key
+aes_decrypt_key128
+aes_decrypt_key128_i
+aes_decrypt_key192
+aes_decrypt_key192_i
+aes_decrypt_key256
+aes_decrypt_key256_i
+aes_encrypt
+aes_encrypt_i
+aes_encrypt_key
+aes_encrypt_key128
+aes_encrypt_key128_i
+aes_encrypt_key192
+aes_encrypt_key192_i
+aes_encrypt_key256
+aes_encrypt_key256_i
+aes_init

@@ -39,8 +39,8 @@ static void getByteArray(JNIEnv* jenv, jbyteArray buf, int pos, int len, jbyte* 
 	memset(dst, 0, len);
 }
 
-// public static native long aes_create(byte[] keyBuf, int keyPos, byte[] ivBuf, int ivPos);
-JNIEXPORT jlong JNICALL DEF_JAVA(aes_1create)(JNIEnv* jenv, jclass jcls, jbyteArray keyBuf, int keyPos, jbyteArray ivBuf, int ivPos)
+// public static native long aes_create(byte[] keyBuf, int keyPos, byte[] ivBuf, int ivPos, boolean decrypt);
+JNIEXPORT jlong JNICALL DEF_JAVA(aes_1create)(JNIEnv* jenv, jclass jcls, jbyteArray keyBuf, int keyPos, jbyteArray ivBuf, int ivPos, jboolean decrypt)
 {
 	static volatile char s_init = 0;
 	jni_aes_ctx* aes;
@@ -60,8 +60,35 @@ JNIEXPORT jlong JNICALL DEF_JAVA(aes_1create)(JNIEnv* jenv, jclass jcls, jbyteAr
 
 	getByteArray(jenv, keyBuf, keyPos, 16, key);
 	getByteArray(jenv, ivBuf, ivPos, 16, aes->buf);
-	aes_encrypt_key128(key, &aes->ctx);
+	if(decrypt)
+		aes_decrypt_key128(key, (aes_decrypt_ctx*)&aes->ctx);
+	else
+		aes_encrypt_key128(key, &aes->ctx);
 	return (jlong)(uintptr_t)aes;
+}
+
+// public static native void aes_encrypt(long handle_aes, byte[] buf, int pos);
+JNIEXPORT void JNICALL DEF_JAVA(aes_1encrypt)(JNIEnv* jenv, jclass jcls, jlong handle_aes, jbyteArray buf, int pos)
+{
+	jbyte b[16];
+	if(!handle_aes || !buf) return;
+	if(pos < 0) pos = 0;
+	if((unsigned)(pos + 16) > (unsigned)(*jenv)->GetArrayLength(jenv, buf)) return;
+	(*jenv)->GetByteArrayRegion(jenv, buf, pos, 16, b);
+	aes_encrypt(b, b, &((jni_aes_ctx*)(uintptr_t)handle_aes)->ctx);
+	(*jenv)->SetByteArrayRegion(jenv, buf, pos, 16, b);
+}
+
+// public static native void aes_decrypt(long handle_aes, byte[] buf, int pos);
+JNIEXPORT void JNICALL DEF_JAVA(aes_1decrypt)(JNIEnv* jenv, jclass jcls, jlong handle_aes, jbyteArray buf, int pos)
+{
+	jbyte b[16];
+	if(!handle_aes || !buf) return;
+	if(pos < 0) pos = 0;
+	if((unsigned)(pos + 16) > (unsigned)(*jenv)->GetArrayLength(jenv, buf)) return;
+	(*jenv)->GetByteArrayRegion(jenv, buf, pos, 16, b);
+	aes_decrypt(b, b, (aes_decrypt_ctx*)&((jni_aes_ctx*)(uintptr_t)handle_aes)->ctx);
+	(*jenv)->SetByteArrayRegion(jenv, buf, pos, 16, b);
 }
 
 // public static native void aes_update(long handle_aes, byte[] buf, int pos, int len);
