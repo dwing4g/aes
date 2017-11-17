@@ -6,7 +6,7 @@
 #include <jni.h>
 #include "aes.h"
 
-#define DEF_JAVA(F) Java_jane_test_AesNative_ ## F
+#define DEF_JAVA(F) Java_jane_test_TestAes_ ## F
 
 typedef struct // 16+244+4+8 = 16*17 = 272; must be aligned with 16 bytes
 {
