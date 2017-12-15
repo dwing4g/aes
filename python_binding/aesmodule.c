@@ -353,9 +353,9 @@ static int py_aes_init(aes_AESObject *self, PyObject *args, PyObject *kwds)
             PyErr_SetString(PyExc_ValueError, "IV/CTR buffer must be 16 bytes long");
             return -1;
         }
-        memcpy(self->iv, iv, AES_BLOCK_SIZE);
+        memcpy(self->iv, iv_buf.buf, AES_BLOCK_SIZE);
         /* Save a copy of the original IV, for possible reset later */
-        memcpy(self->iv_o, iv, AES_BLOCK_SIZE);
+        memcpy(self->iv_o, iv_buf.buf, AES_BLOCK_SIZE);
         PyBuffer_Release(&iv_buf);
     }
 
@@ -399,7 +399,6 @@ static int py_aes_init(aes_AESObject *self, PyObject *args, PyObject *kwds)
 /* https://docs.python.org/2/c-api/typeobj.html#PyTypeObject.tp_alloc */
 static PyObject *secure_alloc(PyTypeObject *type, Py_ssize_t nitems)
 {
-    int success;
     aes_AESObject *self;
     size_t required_mem, extra, tmp;
 
@@ -422,11 +421,9 @@ static PyObject *secure_alloc(PyTypeObject *type, Py_ssize_t nitems)
         return (PyObject *)PyErr_NoMemory();
     }
 #else
-    success = posix_memalign((void **)&self, 16, required_mem);
-    if (success != 0)
+    if(posix_memalign((void **)&self, 16, required_mem) != 0)
         return (PyObject *)PyErr_NoMemory();
-    success = mlock(self, required_mem);
-    if(success != 0)
+    if(mlock(self, required_mem) != 0)
     {
         free(self);
         return (PyObject *)PyErr_NoMemory();
@@ -508,7 +505,17 @@ static PyMethodDef aes_methods[] =
     {NULL}  /* Sentinel */
 };
 
-#ifndef PyMODINIT_FUNC	/* declarations for DLL import/export */
+/* declarations for DLL import/export (if used in an embedded */ 
+/* Python interpreter it is necessary to suppress the export  */
+/* of the module initialisation function)                     */
+#if defined( SUPPRESS_INITFUNC_EXPORT )
+#  undef PyMODINIT_FUNC
+#  if PY_MAJOR_VERSION >= 3
+#    define PyMODINIT_FUNC PyObject *
+#  else
+#    define PyMODINIT_FUNC void
+#  endif
+#elif !defined( PyMODINIT_FUNC )
 #define PyMODINIT_FUNC void
 #endif
 
